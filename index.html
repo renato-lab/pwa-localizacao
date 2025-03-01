@@ -29,14 +29,20 @@
 
         function checkAndSend() {
             const username = document.getElementById("username").value.trim();
+            
+            // Verificando se o campo de nome está vazio
             if (!username) {
                 document.getElementById("status").innerText = "Por favor, digite um nome.";
                 return;
             }
+            
+            // Verificando se o nome digitado é o esperado
             if (username !== NOME_FIXO.trim()) {
                 document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
                 return;
             }
+            
+            // Se nome válido, chama a função para pegar a localização
             getLocation(username);
         }
 
