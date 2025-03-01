@@ -25,7 +25,7 @@
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Nome fixo para validação
-        const NOME_FIXO = "Renato Tadeu Pereira";
+        const NOME_FIXO = "RENATO TADEU PEREIRA";
 
         function checkAndSend() {
             const username = document.getElementById("username").value.trim();
@@ -37,7 +37,7 @@
             }
             
             // Verificando se o nome digitado é o esperado
-            if (username !== NOME_FIXO) {
+            if (username !== NOME_FIXO.trim()) {
                 document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
                 return;
             }
