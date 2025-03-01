@@ -22,21 +22,18 @@
         // Configuração do Supabase
         const SUPABASE_URL = "https://vcgaddzniugltliozdnl.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Nome fixo para validação
         const NOME_FIXO = "Renato Tadeu Pereira";
 
         function checkAndSend() {
-            document.getElementById("username").addEventListener("input", function () {
-                this.value = this.value.toUpperCase();
-            });
             const username = document.getElementById("username").value.trim();
             if (!username) {
                 document.getElementById("status").innerText = "Por favor, digite um nome.";
                 return;
             }
-            if (username !== NOME_FIXO) {
+            if (username !== NOME_FIXO.trim()) {
                 document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
                 return;
             }
