@@ -18,6 +18,7 @@
     <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
 
     <script>
+        
         // Certifique-se de carregar o SDK do Supabase antes
         const SUPABASE_URL = "https://vcgaddzniugltliozdnl.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjZ2FkZHpuaXVnbHRsaW96ZG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NjYwODQsImV4cCI6MjA1NTE0MjA4NH0.26m1I7QPWZNb-NRYklzTiRgsQVEZ4iUOXmic-XRNg9Q";
@@ -76,7 +77,8 @@
     
             document.getElementById("latitude").innerText = latitude.toFixed(6);
             document.getElementById("longitude").innerText = longitude.toFixed(6);
-            document.getElementById("status").innerText = "Enviando ao Supabase...";
+            document.getElementById("imagem").src = "minha_imagem.jpg"; 
+            //document.getElementById("status").innerText = "Enviando ao Supabase...";
     
             try {
                 const { data, error } = await supabase
