@@ -20,6 +20,7 @@
     <script>
         
         // Certifique-se de carregar o SDK do Supabase antes
+        const NOME_FIXO = 'Renato Tadeu Pereira';
         const SUPABASE_URL = "https://vcgaddzniugltliozdnl.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjZ2FkZHpuaXVnbHRsaW96ZG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NjYwODQsImV4cCI6MjA1NTE0MjA4NH0.26m1I7QPWZNb-NRYklzTiRgsQVEZ4iUOXmic-XRNg9Q";
     
@@ -77,7 +78,10 @@
                 document.getElementById("status").innerText = "Por favor, digite um nome.";
                 return;
             }
-
+            if (username !== NOME_FIXO) {
+                document.getElementById("status").innerText = "Nome incorreto. Tente novamente.";
+                return;
+            }
             
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
