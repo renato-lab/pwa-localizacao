@@ -1,6 +1,6 @@
 body {
     background-color: #FFFF00;
-    color: yellow;
+    color: blue;
     text-align: center;
     font-family: Arial, sans-serif;
     height: 100vh;
@@ -13,10 +13,10 @@ body {
 button {
     padding: 10px 20px;
     font-size: 16px;
-    border: none;
+    border: 5px;
     border-radius: 5px;
     background-color: rgba(255, 255, 0, 0.8);
-    color: white;
+    color: blue;
     cursor: pointer;
     margin-top: 10px;
 }
