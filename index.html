@@ -17,41 +17,83 @@
     <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
 
     <script>
-        // Configuração do Supabase
+        // Certifique-se de carregar o SDK do Supabase antes
         const SUPABASE_URL = "https://vcgaddzniugltliozdnl.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjZ2FkZHpuaXVnbHRsaW96ZG5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzk1NjYwODQsImV4cCI6MjA1NTE0MjA4NH0.26m1I7QPWZNb-NRYklzTiRgsQVEZ4iUOXmic-XRNg9Q";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+        // Criação correta do cliente Supabase antes de qualquer uso
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    
+        async function requestPermission() {
+            try {
+                const permission = await navigator.permissions.query({ name: "geolocation" });
 
-        function getLocation() {
-            if (navigator.geolocation) {
-                document.getElementById("status").innerText = "Obtendo localização...";
-                navigator.geolocation.getCurrentPosition(
-                    sendLocation,
-                    showError,
-                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                );
-            } else {
-                document.getElementById("status").innerText = "Geolocalização não suportada.";
+                if (permission.state === "denied") {
+                    document.getElementById("status").innerText = "Permissão bloqueada! Vá para Configurações > Sites > Localização e ative.";
+                    return;
+                }
+
+                // Se necessário, tente redefinir a permissão
+                if (permission.state === "prompt") {
+                    navigator.geolocation.getCurrentPosition(
+                        () => console.log("Permissão concedida"),
+                        () => console.log("Permissão negada")
+                    );
+                }
+            } catch (error) {
+                console.error("Erro ao verificar permissão:", error);
             }
         }
 
+
+        async function getLocation() {
+            try {
+                const permission = await navigator.permissions.query({ name: "geolocation" });
+
+                if (permission.state === "denied") {
+                    document.getElementById("status").innerText = "Permissão de localização bloqueada. Vá para Configurações > Sites > Localização para ativá-la.";
+                    return;
+                }
+
+                document.getElementById("status").innerText = "Obtendo localização...";
+                
+                navigator.geolocation.getCurrentPosition(
+                    sendLocation, 
+                    showError,    
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+
+            } catch (error) {
+                console.error("Erro ao verificar permissão:", error);
+                document.getElementById("status").innerText = "Erro ao acessar localização.";
+            }
+        }
+    
         async function sendLocation(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
-
+    
             document.getElementById("latitude").innerText = latitude.toFixed(6);
             document.getElementById("longitude").innerText = longitude.toFixed(6);
             document.getElementById("status").innerText = "Enviando ao Supabase...";
-
-            const { data, error } = await supabase.from("localizacoes").insert([{ latitude, longitude }]);
-
-            if (error) {
-                document.getElementById("status").innerText = "Erro ao salvar: " + error.message;
-            } else {
+    
+            try {
+                const { data, error } = await supabase
+                    .from("localizacoes")
+                    .insert([{ latitude, longitude, created_at: new Date().toISOString() }]);
+    
+                if (error) {
+                    throw error;
+                }
+    
                 document.getElementById("status").innerText = "Localização enviada com sucesso!";
+                console.log("Sucesso:", data);
+            } catch (err) {
+                console.error("Erro ao enviar:", err.message);
+                document.getElementById("status").innerText = "Erro ao salvar: " + err.message;
             }
         }
-
+    
         function showError(error) {
             let msg = "";
             switch (error.code) {
@@ -69,13 +111,6 @@
                     break;
             }
             document.getElementById("status").innerText = msg;
-        }
-
-        // Registrar Service Worker para transformar em PWA
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js")
-                .then(() => console.log("Service Worker registrado!"))
-                .catch((err) => console.log("Erro ao registrar Service Worker:", err));
         }
     </script>
 </body>
