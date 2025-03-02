@@ -1,6 +1,6 @@
 body {
-    background-color: #121212;
-    color: white;
+    background-color: #FFFF00;
+    color: blue;
     text-align: center;
     font-family: Arial, sans-serif;
     height: 100vh;
@@ -13,21 +13,21 @@ body {
 button {
     padding: 10px 20px;
     font-size: 16px;
-    border: none;
+    border: 5px;
     border-radius: 5px;
-    background-color: rgba(0, 123, 255, 0.8);
-    color: white;
+    background-color: rgba(255, 255, 0, 0.8);
+    color: blue;
     cursor: pointer;
     margin-top: 10px;
 }
 
 button:hover {
-    background-color: rgba(0, 123, 255, 1);
+    background-color: rgba(255, 255, 0, 1);
 }
 
 p {
     font-size: 18px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 0, 0.5);
     padding: 10px;
     border-radius: 5px;
     display: inline-block;
